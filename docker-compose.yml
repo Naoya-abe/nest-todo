@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  dev-db:
+    image: postgres:${POSTGRES_VERSION}
+    ports:
+      - ${LOCAL_DB_PORT}:${CONTAINER_DB_PORT}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - abejuku
+networks:
+  abejuku:
