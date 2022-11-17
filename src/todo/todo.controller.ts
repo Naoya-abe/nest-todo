@@ -4,13 +4,14 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
 } from '@nestjs/common';
-import { CreateTodoDto } from './dto';
+import { CreateTodoDto, EditTodoDto } from './dto';
 import { TodoService } from './todo.service';
 
-@Controller('todo')
+@Controller('todos')
 export class TodoController {
   constructor(private todoService: TodoService) {}
   @Post()
@@ -24,17 +25,20 @@ export class TodoController {
   }
 
   @Get(':id')
-  getTodoById(@Param('id') todoId: number) {
+  getTodoById(@Param('id', ParseIntPipe) todoId: number) {
     return this.todoService.getTodoById(todoId);
   }
 
   @Patch(':id')
-  editTodoById(@Param('id') todoId: number) {
-    return this.todoService.editTodoById(todoId);
+  editTodoById(
+    @Param('id', ParseIntPipe) todoId: number,
+    @Body() dto: EditTodoDto,
+  ) {
+    return this.todoService.editTodoById(todoId, dto);
   }
 
   @Delete(':id')
-  deleteTodoById(@Param('id') todoId: number) {
+  deleteTodoById(@Param('id', ParseIntPipe) todoId: number) {
     return this.todoService.deleteTodoById(todoId);
   }
 }

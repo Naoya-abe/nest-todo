@@ -1,27 +1,54 @@
 import { Injectable } from '@nestjs/common';
+import { domainToASCII } from 'url';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateTodoDto } from './dto';
+import { CreateTodoDto, EditTodoDto } from './dto';
 
 @Injectable()
 export class TodoService {
   constructor(private prisma: PrismaService) {}
-  createTodo(dto: CreateTodoDto) {
-    return 'createTodo';
+  async createTodo(dto: CreateTodoDto) {
+    const todo = await this.prisma.todo.create({
+      data: {
+        title: dto.title,
+        description: dto.description,
+      },
+    });
+    return todo;
   }
 
-  getTodos() {
-    return 'getTodos';
+  async getTodos() {
+    const todos = this.prisma.todo.findMany();
+    return todos;
   }
 
-  getTodoById(todoId: number) {
-    return `getTodoById:${todoId}`;
+  async getTodoById(todoId: number) {
+    const todo = this.prisma.todo.findUnique({
+      where: {
+        id: todoId,
+      },
+    });
+    return todo;
   }
 
-  editTodoById(todoId: number) {
-    return `editTodoById:${todoId}`;
+  async editTodoById(todoId: number, dto: EditTodoDto) {
+    const updatedTodo = await this.prisma.todo.update({
+      where: {
+        id: todoId,
+      },
+      data: {
+        title: dto.title,
+        description: dto.description,
+      },
+    });
+    return updatedTodo;
   }
 
-  deleteTodoById(todoId: number) {
-    return `deleteTodoById:${todoId}`;
+  async deleteTodoById(todoId: number) {
+    await this.prisma.todo.delete({
+      where: {
+        id: todoId,
+      },
+    });
+    return todoId;
   }
 }
